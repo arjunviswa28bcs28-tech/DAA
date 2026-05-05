@@ -1,0 +1,94 @@
+Program 1
+#include<iostream>
+using namespace std;
+int Calculation(string str,string sub){
+    int n=str.length();
+    int m=sub.length();
+    int comp=0;
+    int ali=0;
+    for(int i=0;i<n;i++){
+        cout<<str[i]<<" ";
+    }
+    cout<<"\n";
+    for(int i=0;i<n-m+1;i++){
+        int j=0;
+        while(j<m && str[j+i]==sub[j]){
+            comp=comp+1;
+            j=j+1;
+        }
+        comp=comp+1;
+        ali=ali+1;
+        for(int k=0;k<i;k++){
+                cout<<"  ";
+            }
+        for(int l=0;l<m;l++){
+            cout<<sub[l]<<" ";
+        }
+        cout<<"\n";
+        if(j==m){
+            cout<<"Alignments:"<<ali<<endl;
+            cout<<"Comparison:"<<comp<<endl;
+            return i;
+        }
+    }
+    cout<<"Alignments:"<<ali<<endl;
+    cout<<"Comparison:"<<comp<<endl;
+    return -1;
+}
+int main(){
+    string str;
+    cout<<"Enter the string:"<<endl;
+    getline(cin,str);
+    string sub;
+    cout<<"Enter the substring to search:"<<endl;
+    getline(cin,sub);
+    int s=Calculation(str,sub);
+    if(s==-1){
+        cout<<"NOt found....!";
+    }
+    else{
+        cout<<"found at index:"<<s;
+    }
+}
+
+Program 2
+
+#include <iostream>
+#include<cmath>
+using namespace std;
+struct Point {
+    int x;
+    int y;
+};
+float distance(int x1,int x2,int y1,int y2){
+    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+}
+int main(){
+    int n;
+    cout <<"Enter the number of points :"<<endl;
+    cin>>n;
+    Point p[n];
+    float min=99999999.999;
+    float d;
+    Point a,b;
+    for(int i=0;i<n;i++){
+        cout<<"Enter the x and y value for point "<<i<<" :"<<endl;
+        cin>>p[i].x;
+        cin>>p[i].y;
+    }
+    for(int i=0;i<n-1;i++){
+        for(int j=i+1;j<n;j++){
+            d=distance(p[i].x,p[j].x,p[i].y,p[j].y);
+            cout <<"pair (" << p[i].x<<","<<p[i].y<<"),("<<p[j].x<<","<<p[j].y<<")"<<" distance :"<<d<<endl;
+            if(d<min){
+                min=d;
+                a=p[i];
+                b=p[j];
+            }
+        }
+    }
+    cout << "\nClosest Pair of Points:\n";
+    cout << "(" << a.x << ", " << a.y << ") and ("
+         << b.x << ", " << b.y << ")\n\n";
+    cout << "Minimum Distance = " << min <<"\n"<< endl;
+}
