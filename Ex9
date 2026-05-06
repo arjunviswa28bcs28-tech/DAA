@@ -1,0 +1,91 @@
+import java.util.*;
+
+class Item {
+    int value, weight;
+    double ratio;
+
+    public Item(int value, int weight) {
+        this.value = value;
+        this.weight = weight;
+        this.ratio = (double) value / weight;
+    }
+}
+
+class Node {
+    int level, profit, weight;
+    double bound;
+
+    public Node(int level, int profit, int weight, double bound) {
+        this.level = level;
+        this.profit = profit;
+        this.weight = weight;
+        this.bound = bound;
+    }
+}
+
+public class KnapsackBFS {
+
+    static double calculateBound(Node u, int n, int W, Item[] items) {
+        if (u.weight >= W)
+           return 0;
+        double profitBound = u.profit;
+        int j = u.level + 1;
+        int totWeight = u.weight;
+
+        while (j < n && totWeight + items[j].weight <= W) {
+            totWeight += items[j].weight;
+            profitBound += items[j].value;
+            j++;
+        }
+
+        if (j < n)
+           profitBound += (W - totWeight) * items[j].ratio;
+        return profitBound;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter Capacity: ");
+        int W = sc.nextInt();
+        System.out.print("Enter Number of Items: ");
+        int n = sc.nextInt();
+
+        Item[] items = new Item[n];
+        for (int i = 0; i < n; i++) {
+            System.out.print("Item " + (i + 1) + " (Value Weight): ");
+            items[i] = new Item(sc.nextInt(), sc.nextInt());
+        }
+        Arrays.sort(items, (a, b) -> Double.compare(b.ratio, a.ratio));
+        Queue<Node> q = new LinkedList<>();
+
+        Node root = new Node(-1, 0, 0, 0);
+        root.bound = calculateBound(root, n, W, items);
+        q.add(root);
+
+        int maxProfit = 0;
+
+        while (!q.isEmpty()) {
+            Node u = q.poll();
+
+            if (u.level == n - 1)
+                continue;
+
+            int nextLevel = u.level + 1;
+            Node left = new Node(nextLevel, u.profit + items[nextLevel].value, u.weight + items[nextLevel].weight, 0);
+            if (left.weight <= W) {
+                if (left.profit > maxProfit)
+                   maxProfit = left.profit;
+                left.bound = calculateBound(left, n, W, items);
+                if (left.bound > maxProfit)
+                   q.add(left);
+            }
+            Node right = new Node(nextLevel, u.profit, u.weight, 0);
+            right.bound = calculateBound(right, n, W, items);
+            if (right.bound > maxProfit)
+               q.add(right);
+        }
+
+        System.out.println("\nMaximum Profit: " + maxProfit);
+    }
+}
